@@ -5,20 +5,19 @@ from openai import OpenAI
 import os
 import json
 import re
+import argparse
+
+
 #The dataset (txt)
-desc_file = ""
+desc_file = "data/example.txt"
 #Log JSON responses that failed to parse (txt)
 log_file = open('', 'a')
 #The result path (csv file)
 csv_file_path = ''
 field_names = ['sample', 'attack', 'one-layer-leaves', 'fail','success','content-filters']
 
-# Set proxy environment variables
-os.environ['http_proxy'] = 'http:/127.0.0.1:7890'
-os.environ['https_proxy'] = 'http://127.0.0.1:7890'
-
 # Your OpenAI API key
-key = ''
+key = 'YOUR_OPENAI_API_KEY'
 os.environ['OPENAI_API_KEY'] = key
 openai.api_key = key
 
@@ -364,5 +363,17 @@ leaf_node = '''
         "children": []
       }
 '''
+
 if __name__ == '__main__':
+    global desc_file
+    global log_file
+    global csv_file_path
+    parser = argparse.ArgumentParser()
+    parser.add_argument("data", help="The dataset file (txt). Each line should be the description text of target image.")
+    parser.add_argument("log", help="Log JSON responses that failed to parse (txt)")
+    parser.add_argument("result", help="The result path (csv file)")
+    args = parser.parse_args()
+    desc_file = parser.data
+    log_file = parser.log
+    csv_file_path = parser.result
     integrated_test()
